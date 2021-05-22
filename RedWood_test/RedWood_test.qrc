@@ -1,6 +1,6 @@
 <RCC>
-<qresource>
-<file>img/green-apple.jpg</file>
-<file>img/red-apple.jpg</file>
-</qresource>
+    <qresource prefix="/">
+        <file>img/green-apple.jpg</file>
+        <file>img/red-apple.jpg</file>
+    </qresource>
 </RCC>

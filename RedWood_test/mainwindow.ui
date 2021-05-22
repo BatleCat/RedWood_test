@@ -52,7 +52,7 @@
    </widget>
    <widget class="QWidget" name="widget_gameField" native="true">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
