@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="widget" native="true">
+   <widget class="QWidget" name="widget_mainMenu" native="true">
     <property name="geometry">
      <rect>
       <x>69</x>
@@ -23,7 +23,7 @@
       <height>80</height>
      </rect>
     </property>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="pushButton_newGame">
      <property name="geometry">
       <rect>
        <x>60</x>
@@ -33,10 +33,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>PushButton</string>
+      <string>Новая игра</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_2">
+    <widget class="QPushButton" name="pushButton_appExit">
      <property name="geometry">
       <rect>
        <x>360</x>
@@ -46,11 +46,14 @@
       </rect>
      </property>
      <property name="text">
-      <string>PushButton</string>
+      <string>Выход</string>
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="widget_2" native="true">
+   <widget class="QWidget" name="widget_gameField" native="true">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>69</x>
@@ -59,13 +62,36 @@
       <height>301</height>
      </rect>
     </property>
-    <widget class="QTableView" name="tableView">
+    <widget class="QTableWidget" name="tableWidget_inventar">
      <property name="geometry">
       <rect>
        <x>30</x>
        <y>60</y>
        <width>256</width>
        <height>192</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_mainMenu">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>10</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Главное меню</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="widget_predmet" native="true">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>90</y>
+       <width>100</width>
+       <height>100</height>
       </rect>
      </property>
     </widget>
@@ -84,5 +110,22 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_appExit</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>503</x>
+     <y>68</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>720</x>
+     <y>113</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

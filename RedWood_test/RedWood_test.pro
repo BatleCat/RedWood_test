@@ -10,10 +10,16 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    qt_appdatabase.cpp \
+    qt_inventar.cpp \
+    qt_predmet.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    qt_appdatabase.h \
+    qt_inventar.h \
+    qt_predmet.h
 
 FORMS += \
     mainwindow.ui
@@ -22,3 +28,10 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    img/green-apple.jpg \
+    img/red-apple.jpg
+
+RESOURCES += \
+    RedWood_test.qrc
