@@ -1,17 +1,45 @@
 //-----------------------------------------------------------------------------
 #include "qt_predmet.h"
+#include <QImage>
 //-----------------------------------------------------------------------------
 qt_predmet::qt_predmet(QWidget *parent) :
     QWidget(parent),
     predmet_type(UNKNOW_PREDMET)
 {
+    QImage *img = new QImage(width(), height(), QImage::Format_RGB32);
+    img->fill(palette().window().color());
 
+    widget_layout.setMargin(0);
+    widget_layout.setSpacing(0);
+
+    lable_predmet_img.setFixedSize( img->size() );
+    lable_predmet_img.setPixmap( QPixmap::fromImage(*img) );
+
+    widget_layout.addWidget(&lable_predmet_img);
+
+    setLayout(&widget_layout);
+
+    delete img;
+}
+//-----------------------------------------------------------------------------
+void qt_predmet::set_predmet_img(QString img_string)
+{
+    QImage img;
+    QImage img1;
+
+    predmet_img = img_string;
+
+    img.load(predmet_img);
+    img1 = img.scaled( size(), Qt::KeepAspectRatio );
+
+    lable_predmet_img.setFixedSize( img1.size() );
+    lable_predmet_img.setPixmap( QPixmap::fromImage(img1) );
 }
 //-----------------------------------------------------------------------------
 void qt_predmet::copy_predmet(qt_predmet &src_predmet)
 {
-    predmet_type = src_predmet.predmet_type;
-    predmet_img = src_predmet.predmet_img;
+    predmet_type = src_predmet.get_predmet_type();
+    set_predmet_img(src_predmet.get_predmet_img());
 }
 //-----------------------------------------------------------------------------
 QString qt_predmet::get_predmet_name()

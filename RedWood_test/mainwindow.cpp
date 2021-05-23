@@ -16,35 +16,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
 
+    qDebug() << QString::fromUtf8("Вывожу на экран Предмет.");
+
+    apple.setFixedSize(ui->widget_predmet->width(), ui->widget_predmet->height());
     apple.set_predmet_type(GREEN_APPLE);
     apple.set_predmet_img(QString::fromUtf8(":/img/green-apple.jpg"));
+    ui->widget_predmet->setLayout(apple.layout());
 
-    QImage   img;
-//    if ( !img.load( apple.get_predmet_img() ) )
-//    {
-//        qDebug() << "Error load JPG-file!";
-//    }
-    img.load(apple.get_predmet_img(), "JPG");
-
-    {
-        QImage img1 = img.scaled( ui->widget_predmet->size(), Qt::KeepAspectRatio );
-
-        QHBoxLayout* phbx = new QHBoxLayout;
-        phbx->setMargin(0);
-        phbx->setSpacing(0);
-
-        QLabel* plbl = new QLabel;
-        plbl->setFixedSize(img1.size());
-        plbl->setPixmap(QPixmap::fromImage(img1));
-
-//      QPixmap pix_map(apple.get_predmet_img());
-//      plbl->setFixedSize(pix_map.size());
-//      plbl->setPixmap(pix_map);
-
-        phbx->addWidget(plbl);
-//      ui->widget_predmet->setFixedSize(img.size());
-        ui->widget_predmet->setLayout(phbx);
-    }
+    qDebug() << QString::fromUtf8("Строю талицу Инвентаря.");
 
     ui->tableWidget_inventar->setColumnCount(3);
 
@@ -66,6 +45,9 @@ MainWindow::MainWindow(QWidget *parent)
         QLabel*      plbl;
         QWidget*     cell_widget;
         QVBoxLayout* pvbx;
+
+        QImage   img;
+        img.load(apple.get_predmet_img(), "JPG");
 
         QImage img1 = img.scaled( 100, 100, Qt::KeepAspectRatio );
         //-----------------------------------------------------------
@@ -133,9 +115,14 @@ MainWindow::MainWindow(QWidget *parent)
         ui->tableWidget_inventar->setCellWidget(0, 0, cell_widget);
         //-----------------------------------------------------------
         qt_inventar_item* inventar_item = new qt_inventar_item;
+
+
+//        ui->tableWidget_inventar->setCellWidget(0, 0, inventar_item);
+        //-----------------------------------------------------------
+
         ui->tableWidget_inventar->setCellWidget(1, 0, inventar_item);
         inventar_item->apend_one_predmet();
-//        inventar_item->apend_one_predmet();
+        inventar_item->apend_one_predmet();
         inventar_item->remove_one_predmet();
     }
 

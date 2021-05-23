@@ -4,6 +4,8 @@
 //-----------------------------------------------------------------------------
 #include <QWidget>
 #include <QString>
+#include <QLabel>
+#include <QVBoxLayout>
 #include <QDataStream>
 //-----------------------------------------------------------------------------
 typedef enum
@@ -24,7 +26,7 @@ public:
 
     void          set_predmet_type(PREDMET_TYPE type)   { predmet_type = type; }
     PREDMET_TYPE  get_predmet_type()                    { return predmet_type; }
-    void          set_predmet_img(QString img)          { predmet_img = img;   }
+    void          set_predmet_img(QString img_string);
     QString       get_predmet_img()                     { return predmet_img;  }
     void          copy_predmet(qt_predmet &src_predmet);
     QString       get_predmet_name();
@@ -32,6 +34,8 @@ public:
 private:
     PREDMET_TYPE predmet_type;
     QString      predmet_img;
+    QLabel       lable_predmet_img;
+    QVBoxLayout  widget_layout;
 
 public:
 signals:

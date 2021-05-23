@@ -62,13 +62,13 @@ void qt_inventar_item::remove_one_predmet(void)
 //-----------------------------------------------------------------------------
 QDataStream& operator <<(QDataStream &out, const qt_inventar_item &inventar_item)
 {
-    int count = inventar_item.get_predmet_count();
-    out <<  << inventar_item.get_predmet_descripton();
+//    int count = inventar_item.get_predmet_count();
+//    out <<  << inventar_item.get_predmet_descripton();
     return out;
 }
 //-----------------------------------------------------------------------------
 QDataStream& operator >>(QDataStream &in, qt_inventar_item &inventar_item)
 {
-
+    return in;
 }
 //-----------------------------------------------------------------------------
