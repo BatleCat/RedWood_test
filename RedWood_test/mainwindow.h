@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------------
 #include "qt_appdatabase.h"
 #include "qt_inventar.h"
+#include "qt_inventar_item.h"
 #include "qt_predmet.h"
 //-----------------------------------------------------------------------------
 QT_BEGIN_NAMESPACE
