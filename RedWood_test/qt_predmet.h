@@ -42,7 +42,7 @@ signals:
 
 };
 //-----------------------------------------------------------------------------
-QDataStream& operator <<(QDataStream &out, const qt_predmet &predmet);
+QDataStream& operator <<(QDataStream &out, qt_predmet &predmet);
 QDataStream& operator >>(QDataStream &in, qt_predmet &predmet);
 //-----------------------------------------------------------------------------
 #endif // QT_PREDMET_H

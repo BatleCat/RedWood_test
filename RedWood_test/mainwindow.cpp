@@ -1,12 +1,16 @@
 //-----------------------------------------------------------------------------
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+//-----------------------------------------------------------------------------
+#include <QCoreApplication>
 #include <QPainter>
 #include <QImage>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QColor>
 #include <QtDebug>
+#include <QDataStream>
+#include <QFile>
 //-----------------------------------------------------------------------------
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -15,6 +19,13 @@ MainWindow::MainWindow(QWidget *parent)
     qRegisterMetaType<PREDMET_TYPE>("PREDMET_TYPE");
 
     ui->setupUi(this);
+
+//    QCoreApplication::setOrganizationName(QString::fromUtf8("Company Name"));
+    QCoreApplication::setApplicationName(QString::fromUtf8("RedWood_test"));
+    QCoreApplication::setApplicationVersion(QString::fromUtf8("0.0.0.1"));
+
+//    setWindowIcon(QIcon(":/images/icon_file.ico"));
+    setWindowTitle(QString::fromUtf8("RedWood test"));
 
     qDebug() << QString::fromUtf8("Вывожу на экран Предмет.");
 
@@ -42,88 +53,55 @@ MainWindow::MainWindow(QWidget *parent)
                                      );
     ui->tableWidget_inventar->showGrid();
     {
-        QLabel*      plbl;
-        QWidget*     cell_widget;
-        QVBoxLayout* pvbx;
-
-        QImage   img;
-        img.load(apple.get_predmet_img(), "JPG");
-
-        QImage img1 = img.scaled( 100, 100, Qt::KeepAspectRatio );
         //-----------------------------------------------------------
-        pvbx = new QVBoxLayout;
-        pvbx->setMargin(0);
-        pvbx->setSpacing(0);
-
-        plbl = new QLabel;
-        plbl->setFixedSize(img1.size());
-        plbl->setPixmap(QPixmap::fromImage(img1));
-
-        pvbx->addWidget(plbl);
-
-        plbl = new QLabel;
-        plbl->setAlignment(Qt::AlignRight | Qt::AlignBottom);
-        plbl->setNum(2);
-
-        pvbx->addWidget(plbl);
-
-        cell_widget = new QWidget;
-        cell_widget->setLayout(pvbx);
-
-        ui->tableWidget_inventar->setCellWidget(0, 1, cell_widget);
+        qt_inventar_item* inventar_item1 = new qt_inventar_item;
+        inventar_item1->setFixedSize(100, 100);
+        inventar_item1->set_predmet(apple);
+        inventar_item1->set_predmet_count(5);
         //-----------------------------------------------------------
-        pvbx = new QVBoxLayout;
-        pvbx->setMargin(0);
-        pvbx->setSpacing(0);
+//        QFile file("1.bin");
+//        {
+//            file.open(QIODevice::Append);
+//            QDataStream data(&file);
 
-        plbl = new QLabel;
-        plbl->setFixedSize(img1.size());
-        plbl->setPixmap(QPixmap::fromImage(img1));
+//            data << *inventar_item1;
+//            file.flush();
+//            file.close();
+//        }
+//        delete inventar_item1;
+//        inventar_item1 = new qt_inventar_item;
+//        inventar_item1->setFixedSize(100, 100);
+//        {
+//            file.open(QIODevice::ReadOnly);
+//            QDataStream data(&file);
 
-        pvbx->addWidget(plbl);
-
-        plbl = new QLabel;
-        plbl->setAlignment(Qt::AlignRight | Qt::AlignBottom);
-        plbl->setNum(20);
-
-        pvbx->addWidget(plbl);
-
-        cell_widget = new QWidget;
-        cell_widget->setLayout(pvbx);
-
-        ui->tableWidget_inventar->setCellWidget(1, 1, cell_widget);
+//            data >> *inventar_item1;
+//            file.flush();
+//            file.close();
+//        }
         //-----------------------------------------------------------
-        pvbx = new QVBoxLayout;
-        pvbx->setMargin(0);
-        pvbx->setSpacing(0);
-
-        plbl = new QLabel;
-        plbl->setFixedSize(img1.size());
-        plbl->setPixmap(QPixmap::fromImage(img1));
-
-        pvbx->addWidget(plbl);
-
-        plbl = new QLabel;
-        plbl->setAlignment(Qt::AlignRight | Qt::AlignBottom);
-        plbl->setNum(5);
-
-        pvbx->addWidget(plbl);
-
-        cell_widget = new QWidget;
-        cell_widget->setLayout(pvbx);
-
-        ui->tableWidget_inventar->setCellWidget(0, 0, cell_widget);
+        ui->tableWidget_inventar->setCellWidget(0, 0, inventar_item1);
         //-----------------------------------------------------------
-        qt_inventar_item* inventar_item = new qt_inventar_item;
-
-
-//        ui->tableWidget_inventar->setCellWidget(0, 0, inventar_item);
+        qt_inventar_item* inventar_item2 = new qt_inventar_item;
+        inventar_item2->setFixedSize(100, 100);
+        inventar_item2->set_predmet(apple);
+        inventar_item2->set_predmet_count(20);
+        ui->tableWidget_inventar->setCellWidget(0, 1, inventar_item2);
         //-----------------------------------------------------------
-
-        ui->tableWidget_inventar->setCellWidget(1, 0, inventar_item);
-        inventar_item->apend_one_predmet();
-        inventar_item->apend_one_predmet();
-        inventar_item->remove_one_predmet();
+        qt_inventar_item* inventar_item3 = new qt_inventar_item;
+        inventar_item3->setFixedSize(100, 100);
+        inventar_item3->set_predmet(apple);
+        inventar_item3->set_predmet_count(15);
+        ui->tableWidget_inventar->setCellWidget(1, 1, inventar_item3);
+        //-----------------------------------------------------------
+        qt_inventar_item* inventar_item4 = new qt_inventar_item;
+        inventar_item4->setFixedSize(100, 100);
+        inventar_item4->set_predmet(apple);
+        inventar_item4->set_predmet_count(3);
+        ui->tableWidget_inventar->setCellWidget(1, 0, inventar_item4);
+        inventar_item4->apend_one_predmet();
+        inventar_item2->apend_one_predmet();
+        inventar_item4->remove_one_predmet();
     }
 
 }

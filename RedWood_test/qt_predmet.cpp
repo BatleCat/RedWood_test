@@ -88,7 +88,7 @@ QDataStream& operator <<(QDataStream &out, qt_predmet &predmet)
     QString      img  = predmet.get_predmet_img();
     PREDMET_TYPE type = predmet.get_predmet_type();
 
-    out << img << type;
+    out << type << img;
 
     return out;
 }
@@ -98,10 +98,10 @@ QDataStream& operator >>(QDataStream &in, qt_predmet &predmet)
     QString      img;
     PREDMET_TYPE type;
 
-    in >> img >> type;
+    in >> type >> img;
 
-    predmet.set_predmet_img(img);
     predmet.set_predmet_type(type);
+    predmet.set_predmet_img(img);
 
     return in;
 }
