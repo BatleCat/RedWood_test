@@ -32,7 +32,9 @@ MainWindow::MainWindow(QWidget *parent)
     apple.setFixedSize(ui->widget_predmet->width(), ui->widget_predmet->height());
     apple.set_predmet_type(GREEN_APPLE);
     apple.set_predmet_img(QString::fromUtf8(":/img/green-apple.jpg"));
-    ui->widget_predmet->setLayout(apple.layout());
+    QHBoxLayout *qhbl = new QHBoxLayout(ui->widget_predmet);
+    qhbl->addWidget(&apple);
+    //ui->widget_predmet->setLayout(apple.layout());
 
     qDebug() << QString::fromUtf8("Строю талицу Инвентаря.");
 
@@ -84,7 +86,7 @@ MainWindow::MainWindow(QWidget *parent)
         //-----------------------------------------------------------
         qt_inventar_item* inventar_item2 = new qt_inventar_item;
         inventar_item2->setFixedSize(100, 100);
-        inventar_item2->set_predmet(apple);
+//        inventar_item2->set_predmet(apple);
         inventar_item2->set_predmet_count(20);
         ui->tableWidget_inventar->setCellWidget(0, 1, inventar_item2);
         //-----------------------------------------------------------

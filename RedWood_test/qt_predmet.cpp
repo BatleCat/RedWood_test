@@ -1,6 +1,12 @@
 //-----------------------------------------------------------------------------
 #include "qt_predmet.h"
+//-----------------------------------------------------------------------------
 #include <QImage>
+#include <QDrag>
+#include <QApplication>
+#include <QDebug>
+//-----------------------------------------------------------------------------
+#include "qt_predmetmimedata.h"
 //-----------------------------------------------------------------------------
 qt_predmet::qt_predmet(QWidget *parent) :
     QWidget(parent),
@@ -12,12 +18,14 @@ qt_predmet::qt_predmet(QWidget *parent) :
     widget_layout.setMargin(0);
     widget_layout.setSpacing(0);
 
-    lable_predmet_img.setFixedSize( img->size() );
-    lable_predmet_img.setPixmap( QPixmap::fromImage(*img) );
+    label_predmet_img.setFixedSize( img->size() );
+    label_predmet_img.setPixmap( QPixmap::fromImage(*img) );
 
-    widget_layout.addWidget(&lable_predmet_img);
+    widget_layout.addWidget(&label_predmet_img);
 
     setLayout(&widget_layout);
+
+    setAcceptDrops(true);
 
     delete img;
 }
@@ -32,8 +40,8 @@ void qt_predmet::set_predmet_img(QString img_string)
     img.load(predmet_img);
     img1 = img.scaled( size(), Qt::KeepAspectRatio );
 
-    lable_predmet_img.setFixedSize( img1.size() );
-    lable_predmet_img.setPixmap( QPixmap::fromImage(img1) );
+    label_predmet_img.setFixedSize( img1.size() );
+    label_predmet_img.setPixmap( QPixmap::fromImage(img1) );
 }
 //-----------------------------------------------------------------------------
 void qt_predmet::copy_predmet(qt_predmet &src_predmet)
@@ -69,6 +77,62 @@ QString qt_predmet::get_predmet_name()
         }
     }
     return name;
+}
+//-----------------------------------------------------------------------------
+void qt_predmet::startDrag()
+{
+    QImage img;
+    QImage img1;
+
+    img.load(predmet_img);
+    img1 = img.scaled( size(), Qt::KeepAspectRatio );
+
+    qt_predmetMimeData* pMimeData = new qt_predmetMimeData;
+    pMimeData->setPredmet(this);
+    QDrag* pDrag = new QDrag(this);
+    pDrag->setMimeData(pMimeData);
+    pDrag->setPixmap(QPixmap::fromImage(img1));
+    pDrag->exec(Qt::CopyAction);
+}
+//-----------------------------------------------------------------------------
+void qt_predmet::mousePressEvent(QMouseEvent* pme)
+{
+    if (pme->button() == Qt::LeftButton)
+    {
+        m_ptDragPos = pme->pos();
+        qDebug() << QString::fromUtf8("Нажата левая кнопка мыши.");
+    }
+    QWidget::mousePressEvent(pme);
+}
+//-----------------------------------------------------------------------------
+void qt_predmet::mouseMoveEvent (QMouseEvent* pme)
+{
+    if (pme->buttons() & Qt::LeftButton)
+    {
+        int distance = (pme->pos() - m_ptDragPos).manhattanLength();
+        if (distance > QApplication::startDragDistance())
+        {
+            startDrag();
+        }
+    }
+    QWidget::mouseMoveEvent(pme);
+}
+//-----------------------------------------------------------------------------
+void qt_predmet::dragEnterEvent (QDragEnterEvent* pme)
+{
+    if ( pme->mimeData()->hasFormat(qt_predmetMimeData::mimeType()) )
+    {
+        pme->acceptProposedAction();
+    }
+}
+//-----------------------------------------------------------------------------
+void qt_predmet::dropEvent(QDropEvent* pme)
+{
+    const qt_predmetMimeData* pmmd = dynamic_cast<const qt_predmetMimeData*>( pme->mimeData() );
+    if (pmmd)
+    {
+        copy_predmet( *pmmd->predmet() );
+    }
 }
 //-----------------------------------------------------------------------------
 QDataStream& operator <<(QDataStream &out, const PREDMET_TYPE &predmet_type)

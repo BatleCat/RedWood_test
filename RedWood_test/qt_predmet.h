@@ -7,6 +7,10 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QDataStream>
+#include <QPoint>
+#include <QMouseEvent>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 //-----------------------------------------------------------------------------
 typedef enum
 {
@@ -22,7 +26,7 @@ class qt_predmet : public QWidget
 {
     Q_OBJECT
 public:
-    explicit qt_predmet(QWidget *parent = nullptr);
+    explicit      qt_predmet(QWidget *parent = nullptr);
 
     void          set_predmet_type(PREDMET_TYPE type)   { predmet_type = type; }
     PREDMET_TYPE  get_predmet_type()                    { return predmet_type; }
@@ -32,12 +36,23 @@ public:
     QString       get_predmet_name();
 
 private:
-    PREDMET_TYPE predmet_type;
-    QString      predmet_img;
-    QLabel       lable_predmet_img;
-    QVBoxLayout  widget_layout;
+    void          startDrag();
+
+protected:
+    virtual void  mousePressEvent(QMouseEvent* pme);
+    virtual void  mouseMoveEvent (QMouseEvent* pme);
+    virtual void  dragEnterEvent (QDragEnterEvent*pme);
+    virtual void  dropEvent      (QDropEvent* pme);
+
+private:
+    PREDMET_TYPE  predmet_type;
+    QString       predmet_img;
+    QLabel        label_predmet_img;
+    QVBoxLayout   widget_layout;
+    QPoint        m_ptDragPos;
 
 public:
+
 signals:
 
 };

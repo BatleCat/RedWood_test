@@ -14,14 +14,16 @@ SOURCES += \
     qt_appdatabase.cpp \
     qt_inventar.cpp \
     qt_inventar_item.cpp \
-    qt_predmet.cpp
+    qt_predmet.cpp \
+    qt_predmetmimedata.cpp
 
 HEADERS += \
     mainwindow.h \
     qt_appdatabase.h \
     qt_inventar.h \
     qt_inventar_item.h \
-    qt_predmet.h
+    qt_predmet.h \
+    qt_predmetmimedata.h
 
 FORMS += \
     mainwindow.ui
