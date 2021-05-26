@@ -92,12 +92,12 @@ void qt_inventar_item::mousePressEvent(QMouseEvent* pme)
     if (pme->button() == Qt::LeftButton)
     {
         m_ptDragPos = pme->pos();
-        qDebug() << QString::fromUtf8("Нажата левая кнопка мыши.");
+        qDebug() << QString::fromUtf8("qt_inventar_item: Нажата левая кнопка мыши.");
     }
     if (pme->button() == Qt::RightButton)
     {
         remove_one_predmet();
-        qDebug() << QString::fromUtf8("Нажата правая кнопка мыши.");
+        qDebug() << QString::fromUtf8("qt_inventar_item: Нажата правая кнопка мыши.");
     }
     QWidget::mousePressEvent(pme);
 }
@@ -127,6 +127,8 @@ void qt_inventar_item::dragEnterEvent (QDragEnterEvent* pme)
 //-----------------------------------------------------------------------------
 void qt_inventar_item::dropEvent(QDropEvent* pme)
 {
+    qDebug() << pme->source();
+
     if ( pme->mimeData()->hasFormat(qt_inventar_itemMimeData::mimeType()) )
     {
         const qt_inventar_itemMimeData* pmmd = dynamic_cast<const qt_inventar_itemMimeData*>( pme->mimeData() );

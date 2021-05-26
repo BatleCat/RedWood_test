@@ -105,7 +105,7 @@ void qt_predmet::startDrag()
     QDrag* pDrag = new QDrag(this);
     pDrag->setMimeData(pMimeData);
     pDrag->setPixmap(QPixmap::fromImage(img1));
-    pDrag->exec(Qt::CopyAction);
+    pDrag->exec(Qt::MoveAction);
 }
 //-----------------------------------------------------------------------------
 void qt_predmet::mousePressEvent(QMouseEvent* pme)
@@ -113,7 +113,7 @@ void qt_predmet::mousePressEvent(QMouseEvent* pme)
     if (pme->button() == Qt::LeftButton)
     {
         m_ptDragPos = pme->pos();
-        qDebug() << QString::fromUtf8("Нажата левая кнопка мыши.");
+        qDebug() << QString::fromUtf8("qt_predmet: Нажата левая кнопка мыши.");
     }
     QWidget::mousePressEvent(pme);
 }
