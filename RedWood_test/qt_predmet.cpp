@@ -25,7 +25,7 @@ qt_predmet::qt_predmet(QWidget *parent) :
 
     setLayout(&widget_layout);
 
-    setAcceptDrops(true);
+//    setAcceptDrops(true);
 
     delete img;
 }

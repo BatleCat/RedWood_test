@@ -127,15 +127,7 @@ void qt_inventar_item::dragEnterEvent (QDragEnterEvent* pme)
 //-----------------------------------------------------------------------------
 void qt_inventar_item::dropEvent(QDropEvent* pme)
 {
-    if ( pme->mimeData()->hasFormat(qt_predmetMimeData::mimeType()) )
-    {
-        const qt_predmetMimeData* pmmd = dynamic_cast<const qt_predmetMimeData*>( pme->mimeData() );
-        if (pmmd)
-        {
-            set_predmet( *pmmd->predmet() );
-        }
-    }
-    else if ( pme->mimeData()->hasFormat(qt_inventar_itemMimeData::mimeType()) )
+    if ( pme->mimeData()->hasFormat(qt_inventar_itemMimeData::mimeType()) )
     {
         const qt_inventar_itemMimeData* pmmd = dynamic_cast<const qt_inventar_itemMimeData*>( pme->mimeData() );
         if (pmmd)
@@ -155,7 +147,14 @@ void qt_inventar_item::dropEvent(QDropEvent* pme)
                 new_count += pmmd->inventarItem()->get_predmet_count();
                 set_predmet_count(new_count);
             }
-
+        }
+    }
+    else if ( pme->mimeData()->hasFormat(qt_predmetMimeData::mimeType()) )
+    {
+        const qt_predmetMimeData* pmmd = dynamic_cast<const qt_predmetMimeData*>( pme->mimeData() );
+        if (pmmd)
+        {
+            set_predmet( *pmmd->predmet() );
         }
     }
 }
