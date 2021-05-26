@@ -9,8 +9,8 @@
 #include <QDataStream>
 #include <QPoint>
 #include <QMouseEvent>
-#include <QDragEnterEvent>
-#include <QDropEvent>
+//#include <QDragEnterEvent>
+//#include <QDropEvent>
 //-----------------------------------------------------------------------------
 typedef enum
 {
@@ -28,7 +28,7 @@ class qt_predmet : public QWidget
 public:
     explicit      qt_predmet(QWidget *parent = nullptr);
 
-    void          set_predmet_type(PREDMET_TYPE type)   { predmet_type = type; }
+    void          set_predmet_type(PREDMET_TYPE type);//   { predmet_type = type; }
     PREDMET_TYPE  get_predmet_type()                    { return predmet_type; }
     void          set_predmet_img(QString img_string);
     QString       get_predmet_img()                     { return predmet_img;  }
@@ -41,8 +41,8 @@ private:
 protected:
     virtual void  mousePressEvent(QMouseEvent* pme);
     virtual void  mouseMoveEvent (QMouseEvent* pme);
-    virtual void  dragEnterEvent (QDragEnterEvent*pme);
-    virtual void  dropEvent      (QDropEvent* pme);
+//    virtual void  dragEnterEvent (QDragEnterEvent*pme);
+//    virtual void  dropEvent      (QDropEvent* pme);
 
 private:
     PREDMET_TYPE  predmet_type;

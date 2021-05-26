@@ -30,6 +30,19 @@ qt_predmet::qt_predmet(QWidget *parent) :
     delete img;
 }
 //-----------------------------------------------------------------------------
+void qt_predmet::set_predmet_type(PREDMET_TYPE type)
+{
+    predmet_type = type;
+    if ( predmet_type == PREDMET_TYPE::UNKNOW_PREDMET)
+    {
+        QImage *img = new QImage(width(), height(), QImage::Format_RGB32);
+        img->fill(palette().window().color());
+
+        label_predmet_img.setFixedSize( img->size() );
+        label_predmet_img.setPixmap( QPixmap::fromImage(*img) );
+    }
+}
+//-----------------------------------------------------------------------------
 void qt_predmet::set_predmet_img(QString img_string)
 {
     QImage img;
@@ -118,22 +131,22 @@ void qt_predmet::mouseMoveEvent (QMouseEvent* pme)
     QWidget::mouseMoveEvent(pme);
 }
 //-----------------------------------------------------------------------------
-void qt_predmet::dragEnterEvent (QDragEnterEvent* pme)
-{
-    if ( pme->mimeData()->hasFormat(qt_predmetMimeData::mimeType()) )
-    {
-        pme->acceptProposedAction();
-    }
-}
+//void qt_predmet::dragEnterEvent (QDragEnterEvent* pme)
+//{
+//    if ( pme->mimeData()->hasFormat(qt_predmetMimeData::mimeType()) )
+//    {
+//        pme->acceptProposedAction();
+//    }
+//}
 //-----------------------------------------------------------------------------
-void qt_predmet::dropEvent(QDropEvent* pme)
-{
-    const qt_predmetMimeData* pmmd = dynamic_cast<const qt_predmetMimeData*>( pme->mimeData() );
-    if (pmmd)
-    {
-        copy_predmet( *pmmd->predmet() );
-    }
-}
+//void qt_predmet::dropEvent(QDropEvent* pme)
+//{
+//    const qt_predmetMimeData* pmmd = dynamic_cast<const qt_predmetMimeData*>( pme->mimeData() );
+//    if (pmmd)
+//    {
+//        copy_predmet( *pmmd->predmet() );
+//    }
+//}
 //-----------------------------------------------------------------------------
 QDataStream& operator <<(QDataStream &out, const PREDMET_TYPE &predmet_type)
 {

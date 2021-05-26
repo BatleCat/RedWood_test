@@ -6,6 +6,11 @@
 #include <QString>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QDataStream>
+#include <QPoint>
+#include <QMouseEvent>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 //-----------------------------------------------------------------------------
 #include "qt_predmet.h"
 //-----------------------------------------------------------------------------
@@ -24,10 +29,20 @@ public:
     QString         get_predmet_name(void)                  { return predmet.get_predmet_name(); }
 
 private:
+    void          startDrag();
+
+protected:
+    virtual void  mousePressEvent(QMouseEvent* pme);
+    virtual void  mouseMoveEvent (QMouseEvent* pme);
+    virtual void  dragEnterEvent (QDragEnterEvent*pme);
+    virtual void  dropEvent      (QDropEvent* pme);
+
+private:
     int         predmet_count;
     qt_predmet  predmet;
     QLabel      label_predmet_qty;
     QVBoxLayout widget_layout;
+    QPoint      m_ptDragPos;
 
 signals:
 

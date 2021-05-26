@@ -54,57 +54,18 @@ MainWindow::MainWindow(QWidget *parent)
                                      300 + ui->tableWidget_inventar->horizontalHeader()->height()
                                      );
     ui->tableWidget_inventar->showGrid();
-    {
-        //-----------------------------------------------------------
-        qt_inventar_item* inventar_item1 = new qt_inventar_item;
-        inventar_item1->setFixedSize(100, 100);
-        inventar_item1->set_predmet(apple);
-        inventar_item1->set_predmet_count(5);
-        //-----------------------------------------------------------
-//        QFile file("1.bin");
-//        {
-//            file.open(QIODevice::Append);
-//            QDataStream data(&file);
 
-//            data << *inventar_item1;
-//            file.flush();
-//            file.close();
-//        }
-//        delete inventar_item1;
-//        inventar_item1 = new qt_inventar_item;
-//        inventar_item1->setFixedSize(100, 100);
-//        {
-//            file.open(QIODevice::ReadOnly);
-//            QDataStream data(&file);
-
-//            data >> *inventar_item1;
-//            file.flush();
-//            file.close();
-//        }
-        //-----------------------------------------------------------
-        ui->tableWidget_inventar->setCellWidget(0, 0, inventar_item1);
-        //-----------------------------------------------------------
-        qt_inventar_item* inventar_item2 = new qt_inventar_item;
-        inventar_item2->setFixedSize(100, 100);
-//        inventar_item2->set_predmet(apple);
-        inventar_item2->set_predmet_count(20);
-        ui->tableWidget_inventar->setCellWidget(0, 1, inventar_item2);
-        //-----------------------------------------------------------
-        qt_inventar_item* inventar_item3 = new qt_inventar_item;
-        inventar_item3->setFixedSize(100, 100);
-        inventar_item3->set_predmet(apple);
-        inventar_item3->set_predmet_count(15);
-        ui->tableWidget_inventar->setCellWidget(1, 1, inventar_item3);
-        //-----------------------------------------------------------
-        qt_inventar_item* inventar_item4 = new qt_inventar_item;
-        inventar_item4->setFixedSize(100, 100);
-        inventar_item4->set_predmet(apple);
-        inventar_item4->set_predmet_count(3);
-        ui->tableWidget_inventar->setCellWidget(1, 0, inventar_item4);
-        inventar_item4->apend_one_predmet();
-        inventar_item2->apend_one_predmet();
-        inventar_item4->remove_one_predmet();
-    }
+    int col;
+    int row;
+    for (col = 0; col < ui->tableWidget_inventar->columnCount(); col++)
+        for (row = 0; row < ui->tableWidget_inventar->rowCount(); row++)
+        {
+            //-----------------------------------------------------------
+            qt_inventar_item* inventar_item = new qt_inventar_item;
+            inventar_item->setFixedSize(100, 100);
+            ui->tableWidget_inventar->setCellWidget(row, col, inventar_item);
+            //-----------------------------------------------------------
+        }
 
 }
 //-----------------------------------------------------------------------------
