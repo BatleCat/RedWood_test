@@ -9,8 +9,6 @@
 #include <QDataStream>
 #include <QPoint>
 #include <QMouseEvent>
-//#include <QDragEnterEvent>
-//#include <QDropEvent>
 //-----------------------------------------------------------------------------
 typedef enum
 {
@@ -41,10 +39,8 @@ private:
 protected:
     virtual void  mousePressEvent(QMouseEvent* pme);
     virtual void  mouseMoveEvent (QMouseEvent* pme);
-//    virtual void  dragEnterEvent (QDragEnterEvent*pme);
-//    virtual void  dropEvent      (QDropEvent* pme);
 
-private:
+protected:
     PREDMET_TYPE  predmet_type;
     QString       predmet_img;
     QLabel        label_predmet_img;

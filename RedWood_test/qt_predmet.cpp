@@ -4,16 +4,18 @@
 #include <QImage>
 #include <QDrag>
 #include <QApplication>
-#include <QDebug>
+#include <QMouseEvent>
+//#include <QDebug>
 //-----------------------------------------------------------------------------
 #include "qt_predmetmimedata.h"
 //-----------------------------------------------------------------------------
 qt_predmet::qt_predmet(QWidget *parent) :
     QWidget(parent),
-    predmet_type(UNKNOW_PREDMET)
+    predmet_type(PREDMET_TYPE::UNKNOW_PREDMET),
+    predmet_img(QString::fromUtf8(""))
 {
     QImage *img = new QImage(width(), height(), QImage::Format_RGB32);
-    img->fill(palette().window().color());
+    img->fill(palette().background().color());
 
     widget_layout.setMargin(0);
     widget_layout.setSpacing(0);
@@ -24,8 +26,6 @@ qt_predmet::qt_predmet(QWidget *parent) :
     widget_layout.addWidget(&label_predmet_img);
 
     setLayout(&widget_layout);
-
-//    setAcceptDrops(true);
 
     delete img;
 }
@@ -113,7 +113,6 @@ void qt_predmet::mousePressEvent(QMouseEvent* pme)
     if (pme->button() == Qt::LeftButton)
     {
         m_ptDragPos = pme->pos();
-        qDebug() << QString::fromUtf8("qt_predmet: Нажата левая кнопка мыши.");
     }
     QWidget::mousePressEvent(pme);
 }
@@ -130,23 +129,6 @@ void qt_predmet::mouseMoveEvent (QMouseEvent* pme)
     }
     QWidget::mouseMoveEvent(pme);
 }
-//-----------------------------------------------------------------------------
-//void qt_predmet::dragEnterEvent (QDragEnterEvent* pme)
-//{
-//    if ( pme->mimeData()->hasFormat(qt_predmetMimeData::mimeType()) )
-//    {
-//        pme->acceptProposedAction();
-//    }
-//}
-//-----------------------------------------------------------------------------
-//void qt_predmet::dropEvent(QDropEvent* pme)
-//{
-//    const qt_predmetMimeData* pmmd = dynamic_cast<const qt_predmetMimeData*>( pme->mimeData() );
-//    if (pmmd)
-//    {
-//        copy_predmet( *pmmd->predmet() );
-//    }
-//}
 //-----------------------------------------------------------------------------
 QDataStream& operator <<(QDataStream &out, const PREDMET_TYPE &predmet_type)
 {

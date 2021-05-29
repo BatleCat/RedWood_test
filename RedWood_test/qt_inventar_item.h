@@ -14,19 +14,15 @@
 //-----------------------------------------------------------------------------
 #include "qt_predmet.h"
 //-----------------------------------------------------------------------------
-class qt_inventar_item : public QWidget
+class qt_inventar_item : public qt_predmet
 {
     Q_OBJECT
 public:
-    explicit qt_inventar_item(QWidget *parent = nullptr);
+    explicit      qt_inventar_item(qt_predmet *parent = nullptr);
 
-    void            set_predmet_count(int new_count);
-    int             get_predmet_count(void)                 { return predmet_count; }
-    void            set_predmet(qt_predmet &new_predmet);
-//    qt_predmet&     get_predmet(void)                       { return predmet; }
-    PREDMET_TYPE    get_predmet_type(void)                  { return predmet.get_predmet_type(); }
-    QString         get_predmet_img(void)                   { return predmet.get_predmet_img (); }
-    QString         get_predmet_name(void)                  { return predmet.get_predmet_name(); }
+    void          set_predmet_count(int new_count);
+    int           get_predmet_count(void)                 { return predmet_count; }
+    void          set_predmet(qt_predmet &new_predmet);
 
 private:
     void          startDrag();
@@ -37,12 +33,10 @@ protected:
     virtual void  dragEnterEvent (QDragEnterEvent*pme);
     virtual void  dropEvent      (QDropEvent* pme);
 
-private:
-    int         predmet_count;
-    qt_predmet  predmet;
-    QLabel      label_predmet_qty;
-    QVBoxLayout widget_layout;
-    QPoint      m_ptDragPos;
+protected:
+    int           predmet_count;
+    QLabel        label_predmet_qty;
+    QPoint        m_ptDragPos;
 
 signals:
 
