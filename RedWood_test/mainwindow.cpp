@@ -8,9 +8,12 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QColor>
-//#include <QtDebug>
 #include <QDataStream>
 #include <QFile>
+//-----------------------------------------------------------------------------
+#include <QtDebug>
+#include <QtSql>
+#include <QStringList>
 //-----------------------------------------------------------------------------
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -69,6 +72,265 @@ MainWindow::MainWindow(QWidget *parent)
             //-----------------------------------------------------------
         }
     }
+    //------------------------------------------------------------------------
+    qDebug() << QString::fromUtf8("Начинаю работать с базой данных");
+    //------------------------------------------------------------------------
+    // Create connections
+    //------------------------------------------------------------------------
+    qDebug() << QString::fromUtf8("Создаю базу данных");
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+
+    QStringList lst = db.tables();
+    foreach (QString str, lst)
+    {
+        qDebug() << "Table:" << str;
+    }
+
+    db.setDatabaseName("redwoodtest.sqlite");
+    db.setUserName("user");
+    db.setHostName("localhost");
+    db.setPassword("");
+    if (!db.open())
+    {
+        qDebug() << QString::fromUtf8("Cannot open database:") << db.lastError();
+    }
+    else
+    {
+        qDebug() << QString::fromUtf8("Open database succesful");
+    }
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    QSqlQuery  query;
+    QSqlRecord rec;
+    QSqlError  db_err;
+    {
+        if (!query.exec("PRAGMA foreign_keys = ON;"))
+        {
+            qDebug() << "Unable to foreign_keys = ON";
+        }
+
+        query.exec("PRAGMA foreign_keys;");
+        query.next();
+//        rec = query.record();
+//        qDebug() << rec.count();
+        qDebug() << query.value("*").toString();
+        db_err = query.lastError();
+        qDebug() << db_err.text();
+    }
+    //------------------------------------------------------------------------
+    // Создаем таблицу Предметы
+    //-------------------------------------------------------------------------
+    qDebug() << QString::fromUtf8("Создаю таблицу Предметы");
+    QString str = QString::fromUtf8(
+        "CREATE TABLE predmet ( "
+        "predmetId INTEGER PRIMARY KEY NOT NULL, "
+        "type      INTEGER UNIQUE NOT NULL, "
+        "image     TEXT, "
+        "name      TEXT NOT NULL "
+        ");"
+    );
+    if (!query.exec(str))
+    {
+        qDebug() << "Unable to create a table";
+    }
+    //-------------------------------------------------------------------------
+    // Создаю таблицу Инвентарь
+    //-------------------------------------------------------------------------
+    qDebug() << QString::fromUtf8("Создаю таблицу Инвентарь");
+    str = QString::fromUtf8(
+        "CREATE TABLE inventar ( "
+        "inventarId INTEGER PRIMARY KEY NOT NULL, "
+        "row        INTEGER NOT NULL, "
+        "col        INTEGER NOT NULL, "
+//        "predmetRef INTEGER FOREIGN KEY(predmetRef) REFERENCES predmet(predmetId), "
+        "predmetRef INTEGER REFERENCES predmet(predmetId), "
+        "count      INTEGER NOT NULL "
+        ");"
+    );
+    if (!query.exec(str))
+    {
+        qDebug() << "Unable to create a table";
+    }
+    //-------------------------------------------------------------------------
+    // Добавляем данные в базу
+    //-------------------------------------------------------------------------
+    QString strF = QString::fromUtf8(
+        "INSERT INTO predmet (predmetId, type, image, name) "
+        "VALUES(%1, '%2', '%3', '%4');"
+    );
+
+    str =   strF.arg("1")
+                .arg(int(PREDMET_TYPE::UNKNOW_PREDMET))
+                .arg(QString::fromUtf8(":/img/"))
+                .arg(QString::fromUtf8("Неизвестный"));
+    if (!query.exec(str))
+    {
+        qDebug() << "Unable to make insert operation";
+    }
+
+    str =   strF.arg("2")
+                .arg(int(PREDMET_TYPE::GREEN_APPLE))
+                .arg(QString::fromUtf8(":/img/green-apple.jpg"))
+                .arg(QString::fromUtf8("Зеленое яблоко"));
+    if (!query.exec(str))
+    {
+        qDebug() << "Unable to make insert operation";
+    }
+
+    str =   strF.arg("3")
+                .arg(int(PREDMET_TYPE::RED_APPLE))
+                .arg(QString::fromUtf8(":/img/red-apple.jpg"))
+                .arg(QString::fromUtf8("Красное яблоко"));
+    if (!query.exec(str))
+    {
+        qDebug() << "Unable to make insert operation";
+    }
+
+    //-------------------------------------------------------------------------
+    // Считываем данные из базы
+    //-------------------------------------------------------------------------
+    if (!query.exec("SELECT * FROM predmet;"))
+    {
+        qDebug() << "Unable to execute query — exiting";
+    }
+
+    rec = query.record();
+    int nNumber = 0;
+    PREDMET_TYPE fdb_type;
+    QString      fdb_image;
+    QString      fdb_name;
+
+    while (query.next())
+    {
+        nNumber   = query.value(rec.indexOf("predmetId")).toInt();
+        fdb_type  = (PREDMET_TYPE)query.value(rec.indexOf("type")).toInt();
+        fdb_image = query.value(rec.indexOf("image")).toString();
+        fdb_name  = query.value(rec.indexOf("name")).toString();
+
+        qDebug() << nNumber
+                 << " | " << fdb_type
+                 << " | " << fdb_image
+                 << " | " << fdb_name;
+    }
+    //-------------------------------------------------------------------------
+    // Добавляем данные в таблицу Инвентарь
+    //-------------------------------------------------------------------------
+    qDebug() << QString::fromUtf8("Заполняю таблицу Инвентарь");
+    strF = QString::fromUtf8(
+        "INSERT INTO inventar (inventarId, row, col, predmetRef, count) "
+        "VALUES(%1, '%2', '%3', '%4', '%5');"
+    );
+    row = 0;
+    col = 0;
+    int count = 0;
+    for (col = 0; col < ui->tableWidget_inventar->columnCount(); col++)
+    {
+        for (row = 0; row < ui->tableWidget_inventar->rowCount(); row++)
+        {
+            count++;
+            str =   strF.arg(count)
+                        .arg(row)
+                        .arg(col)
+                        .arg(1)
+                        .arg(0);
+
+            if (!query.exec(str))
+            {
+                qDebug() << "Unable to make insert operation";
+                qDebug() << str;
+            }
+        }
+    }
+    qDebug() << QString::fromUtf8("Таблица ""Инвентарь"" заполнена");
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    qDebug() << QString::fromUtf8("Изменяю значение PredmetRef и count для элементов с row=1 col=2");
+    str = QString::fromUtf8("UPDATE inventar "
+        "SET predmetRef = 2 "
+        "WHERE row = 1 AND col = 2; "
+            );
+    if (!query.exec(str))
+    {
+        db_err = query.lastError();
+        qDebug() << QString::fromUtf8("Ошибка при изменении значения!");
+//        qDebug() << db_err.databaseText();
+//        qDebug() << db_err.driverText();
+        qDebug() << db_err.text();
+    }
+    str = QString::fromUtf8("UPDATE inventar "
+        "SET count = 5 "
+        "WHERE row = 1 AND col = 2; "
+            );
+    if (!query.exec(str))
+    {
+        db_err = query.lastError();
+        qDebug() << QString::fromUtf8("Ошибка при изменении значения!");
+//        qDebug() << db_err.databaseText();
+//        qDebug() << db_err.driverText();
+        qDebug() << db_err.text();
+    }
+    //-------------------------------------------------------------------------
+    str = "SELECT inventarId FROM inventar WHERE row = 1 AND col = 2;";
+    query.exec(str);
+    db_err = query.lastError();
+    rec = query.record();
+    query.next();
+    qDebug() << query.value(rec.indexOf("inventarId")).toInt();
+    qDebug() << db_err.text();
+    //-------------------------------------------------------------------------
+    // Считываем данные из базы
+    //-------------------------------------------------------------------------
+    qDebug() << QString::fromUtf8("Считываю содержимое таблицы ""Инвентарь"" ");
+    if (!query.exec("SELECT * FROM inventar;"))
+    {
+        qDebug() << "Unable to execute query — exiting";
+    }
+
+    rec = query.record();
+    nNumber = 0;
+    row = 0;
+    col = 0;
+    int predmet_ref = 0;
+    count = 0;
+
+    while (query.next())
+    {
+        nNumber     = query.value(rec.indexOf("inventarId")).toInt();
+        row         = query.value(rec.indexOf("row")).toInt();
+        col         = query.value(rec.indexOf("col")).toInt();
+        predmet_ref = query.value(rec.indexOf("predmetRef")).toInt();
+        count       = query.value(rec.indexOf("count")).toInt();
+
+        qDebug() << nNumber
+                 << " | " << row
+                 << " | " << col
+                 << " | " << predmet_ref
+                 << " | " << count;
+    }
+    //-------------------------------------------------------------------------
+/*
+    CREATE TABLE addressbook (
+    number INTEGER PRIMARY KEY NOT NULL,
+    name VARCHAR(15),
+    phone VARCHAR(12),
+    email VARCHAR(15)
+    );
+
+    INSERT INTO addressbook (number, name, phone, email)
+    VALUES(1, 'Piggy', '+49 631322187', 'piggy@mega.de');
+
+    SELECT email
+    FROM addressbook
+    WHERE name = 'Piggy';
+
+    UPDATE addressbook
+    SET email = 'piggy@supermega.de'
+    WHERE name = 'Piggy';
+
+    DELETE FROM addressbook
+    WHERE name = 'Piggy';
+*/
 }
 //-----------------------------------------------------------------------------
 MainWindow::~MainWindow()
