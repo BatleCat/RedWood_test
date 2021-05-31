@@ -14,6 +14,8 @@
 #include <QtDebug>
 #include <QtSql>
 #include <QStringList>
+#include <QList>
+#include <QVariant>
 //-----------------------------------------------------------------------------
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -81,24 +83,25 @@ MainWindow::MainWindow(QWidget *parent)
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
 
+    db.setDatabaseName("redwoodtest.sqlite");
+    db.setHostName("localhost");
+//    db.setUserName("user");
+//    db.setPassword("");
+    if (!db.open())
+    {
+        qDebug() << QString::fromUtf8("Cannot open database:") << db.lastError().text();
+    }
+    else
+    {
+        qDebug() << QString::fromUtf8("Open database succesful");
+    }
+
     QStringList lst = db.tables();
     foreach (QString str, lst)
     {
         qDebug() << "Table:" << str;
     }
 
-    db.setDatabaseName("redwoodtest.sqlite");
-    db.setUserName("user");
-    db.setHostName("localhost");
-    db.setPassword("");
-    if (!db.open())
-    {
-        qDebug() << QString::fromUtf8("Cannot open database:") << db.lastError();
-    }
-    else
-    {
-        qDebug() << QString::fromUtf8("Open database succesful");
-    }
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
     QSqlQuery  query;
@@ -107,16 +110,18 @@ MainWindow::MainWindow(QWidget *parent)
     {
         if (!query.exec("PRAGMA foreign_keys = ON;"))
         {
-            qDebug() << "Unable to foreign_keys = ON";
+            qDebug() << "Unable to foreign_keys = ON : " << db.lastError().text();
         }
 
         query.exec("PRAGMA foreign_keys;");
-        query.next();
-//        rec = query.record();
-//        qDebug() << rec.count();
-        qDebug() << query.value("*").toString();
-        db_err = query.lastError();
-        qDebug() << db_err.text();
+        QList<QVariant> lst = query.boundValues().values();
+        foreach (QVariant x, lst)
+        {
+            qDebug() << "PRAGMA foreign_keys = " << x.toString().toUtf8().data();
+        }
+
+//        db_err = query.lastError();
+//        qDebug() << db_err.text();
     }
     //------------------------------------------------------------------------
     // Создаем таблицу Предметы
@@ -132,7 +137,7 @@ MainWindow::MainWindow(QWidget *parent)
     );
     if (!query.exec(str))
     {
-        qDebug() << "Unable to create a table";
+        qDebug() << "Unable to create a table: " << db.lastError().text();
     }
     //-------------------------------------------------------------------------
     // Создаю таблицу Инвентарь
@@ -143,14 +148,16 @@ MainWindow::MainWindow(QWidget *parent)
         "inventarId INTEGER PRIMARY KEY NOT NULL, "
         "row        INTEGER NOT NULL, "
         "col        INTEGER NOT NULL, "
-//        "predmetRef INTEGER FOREIGN KEY(predmetRef) REFERENCES predmet(predmetId), "
-        "predmetRef INTEGER REFERENCES predmet(predmetId), "
-        "count      INTEGER NOT NULL "
+        "predmetRef INTEGER NOT NULL, "
+        "count      INTEGER NOT NULL, "
+        "FOREIGN KEY(predmetRef) REFERENCES predmet(predmetId) "
         ");"
     );
     if (!query.exec(str))
     {
-        qDebug() << "Unable to create a table";
+        qDebug() << "Unable to create a table: " << db.lastError().text();
+        query.next();
+        qDebug() << "Unable to create a table: " << db.lastError().text();
     }
     //-------------------------------------------------------------------------
     // Добавляем данные в базу
@@ -245,11 +252,20 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug() << QString::fromUtf8("Таблица ""Инвентарь"" заполнена");
     //-------------------------------------------------------------------------
     //-------------------------------------------------------------------------
+    str = QString::fromUtf8("SELECT predmetId FROM predmet WHERE name = ") + QString::fromUtf8("'Зеленое яблоко';");
+    query.exec(str);
+    qDebug() << query.lastError().text();
+    query.next();
+    rec = query.record();
+    int refId = query.value(rec.indexOf("predmetId")).toInt();
+    qDebug() << refId;
+    //-------------------------------------------------------------------------
+
     qDebug() << QString::fromUtf8("Изменяю значение PredmetRef и count для элементов с row=1 col=2");
     str = QString::fromUtf8("UPDATE inventar "
-        "SET predmetRef = 2 "
+        "SET predmetRef = %1 "
         "WHERE row = 1 AND col = 2; "
-            );
+            ).arg(refId);
     if (!query.exec(str))
     {
         db_err = query.lastError();
@@ -308,6 +324,7 @@ MainWindow::MainWindow(QWidget *parent)
                  << " | " << predmet_ref
                  << " | " << count;
     }
+    db.close();
     //-------------------------------------------------------------------------
 /*
     CREATE TABLE addressbook (
