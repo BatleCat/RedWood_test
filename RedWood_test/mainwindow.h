@@ -25,7 +25,6 @@ private:
     Ui::MainWindow *ui;
 
     qt_predmet     apple;
-//    qt_inventar    inventar;
     qt_appDataBase appDataBase;
 
 public slots:

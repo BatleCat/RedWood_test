@@ -24,29 +24,21 @@ qt_appDataBase::~qt_appDataBase(void)
 //-----------------------------------------------------------------------------
 void qt_appDataBase::db_connect(void)
 {
-    QSqlQuery query;
-
     //------------------------------------------------------------------------
-    qDebug() << QString::fromUtf8("Начинаю работать с базой данных");
+    // Создаю базу данных
     //------------------------------------------------------------------------
-    // Create DataBase
-    //------------------------------------------------------------------------
-    qDebug() << QString::fromUtf8("Создаю базу данных");
-
     db = QSqlDatabase::addDatabase("QSQLITE");
 
     db.setDatabaseName(db_name);
     db.setHostName("localhost");
-//    db.setUserName("user");
-//    db.setPassword("");
+    db.setUserName("user");
+    db.setPassword("");
     if (!db.open())
     {
         qDebug() << QString::fromUtf8("Не могу открыть базу данных: ") << db.lastError().text();
         // throw some_err;
         return;
     }
-
-    qDebug() << QString::fromUtf8("Успешное открытие базы данных");
     //------------------------------------------------------------------------
     QStringList lst = db.tables();
     //------------------------------------------------------------------------
@@ -54,11 +46,10 @@ void qt_appDataBase::db_connect(void)
     //------------------------------------------------------------------------
     if ( !db.tables(QSql::Tables).contains( QString::fromUtf8("predmet") ) )
     {
+        QSqlQuery query;
         //------------------------------------------------------------------------
         // Создаю таблицу predmet
         //-------------------------------------------------------------------------
-        qDebug() << QString::fromUtf8("Создаю таблицу predmet");
-
         QString str = QString::fromUtf8
         (
             "CREATE TABLE predmet ( "
@@ -75,11 +66,11 @@ void qt_appDataBase::db_connect(void)
             return;
         }
         //------------------------------------------------------------------------
-        // Заполняем таблицу predmet
+        // Заполняю таблицу predmet
         //-------------------------------------------------------------------------
         QString strF = QString::fromUtf8(
             "INSERT INTO predmet (predmetId, type, image, name) "
-            "VALUES(%1, '%2', '%3', '%4');"
+            "VALUES(%1, %2, '%3', '%4');"
         );
 
         str =   strF.arg("1")
@@ -111,13 +102,12 @@ void qt_appDataBase::db_connect(void)
     //------------------------------------------------------------------------
     if ( !db.tables(QSql::Tables).contains( QString::fromUtf8("inventar") ) )  // Если в базе даннх нет таблицы predmet, то создаем ее
     {
+        QSqlQuery query;
         //------------------------------------------------------------------------
         query.exec("PRAGMA foreign_keys = ON;");
         //------------------------------------------------------------------------
         // Создаем таблицу inventar
         //-------------------------------------------------------------------------
-        qDebug() << QString::fromUtf8("Создаю таблицу inventar");
-
         QString str = QString::fromUtf8
         (
             "CREATE TABLE inventar ( "
@@ -138,11 +128,11 @@ void qt_appDataBase::db_connect(void)
         //-------------------------------------------------------------------------
         // Добавляем данные в таблицу Инвентарь
         //-------------------------------------------------------------------------
-        qDebug() << QString::fromUtf8("Заполняю таблицу Инвентарь");
-        QString strF = QString::fromUtf8(
-            "INSERT INTO inventar (inventarId, row, col, predmetRef, count) "
-            "VALUES(%1, '%2', '%3', '%4', '%5');"
-        );
+        QString strF = QString::fromUtf8
+                (
+                    "INSERT INTO inventar (inventarId, row, col, predmetRef, count) "
+                    "VALUES(%1, %2, %3, %4, %5);"
+                );
         int row = 0;
         int col = 0;
         int count = 0;
@@ -166,7 +156,6 @@ void qt_appDataBase::db_connect(void)
                 }
             }
         }
-        qDebug() << QString::fromUtf8("Таблица ""Инвентарь"" заполнена");
 
     }
 
@@ -190,7 +179,7 @@ void qt_appDataBase::db_write_item(const int row, const int col, qt_inventar_ite
     QSqlRecord   inventar_rec;
     QSqlRecord   predmet_rec;
 
-    QString str = QString::fromUtf8("SELECT predmetId FROM predmet WHERE type = %1 AND name = %2;").arg((int)db_predmet_type).arg(db_predmet_name);
+    QString str = QString::fromUtf8("SELECT predmetId FROM predmet WHERE type = %1 AND name = '%2';").arg((int)db_predmet_type).arg(db_predmet_name);
     if ( !query.exec(str) )
     {
         qDebug() << QString::fromUtf8("Не могу найти предмет в таблице predmet! ");
@@ -205,13 +194,13 @@ void qt_appDataBase::db_write_item(const int row, const int col, qt_inventar_ite
     query.next();
     db_predmet_ref  = query.value(predmet_rec.indexOf("predmetId")).toInt();
 
-//    qDebug() << QString::fromUtf8("Изменяю значение PredmetRef и count для элементов с row col");
     str = QString::fromUtf8
           (
                 "UPDATE inventar "
                 "SET predmetRef = %1 "
                 "WHERE row = %2 AND col = %3; "
           ).arg(db_predmet_ref).arg(row).arg(col);
+
     if (!query.exec(str))
     {
         qDebug() << QString::fromUtf8("Ошибка при изменении значения в таблице inventar!");
@@ -227,6 +216,7 @@ void qt_appDataBase::db_write_item(const int row, const int col, qt_inventar_ite
                 "SET count = %1 "
                 "WHERE row = %2 AND col = %3; "
           ).arg(db_predmet_count).arg(row).arg(col);
+
     if (!query.exec(str))
     {
         qDebug() << QString::fromUtf8("Ошибка при изменении значения в таблице inventar!");
@@ -290,7 +280,7 @@ qt_inventar_item* qt_appDataBase::db_read_item (const int row, const int col)
     fdb_predmet->set_predmet_img(fdb_predmet_image);
 
     qt_inventar_item* item = new qt_inventar_item;
-//    item->setFixedSize(100, 100);
+    item->setFixedSize(100, 100);
     item->set_predmet(*fdb_predmet);
     item->set_predmet_count(fdb_predmet_count);
 

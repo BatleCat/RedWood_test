@@ -34,19 +34,21 @@ MainWindow::MainWindow(QWidget *parent)
 //    setWindowIcon(QIcon(":/images/icon_file.ico"));
     setWindowTitle(QString::fromUtf8("RedWood test"));
 
-//    qDebug() << QString::fromUtf8("Вывожу на экран Предмет.");
-
+    //-------------------------------------------------------------------------
+    // Вывожу на экран Предмет
+    //-------------------------------------------------------------------------
     apple.setFixedSize(ui->widget_predmet->width(), ui->widget_predmet->height());
     apple.set_predmet_type(GREEN_APPLE);
     apple.set_predmet_img(QString::fromUtf8(":/img/green-apple.jpg"));
     QHBoxLayout *qhbl = new QHBoxLayout(ui->widget_predmet);
     qhbl->addWidget(&apple);
-
+    //-------------------------------------------------------------------------
     ui->widget_gameField->setVisible(false);
     ui->widget_mainMenu->setVisible(true);
-
+    //-------------------------------------------------------------------------
     connect( ui->pushButton_newGame,  SIGNAL( pressed() ), this, SLOT( startGame() ) );
     connect( ui->pushButton_mainMenu, SIGNAL( pressed() ), this, SLOT( mainMenu()  ) );
+    //-------------------------------------------------------------------------
 }
 //-----------------------------------------------------------------------------
 MainWindow::~MainWindow()
@@ -56,28 +58,12 @@ MainWindow::~MainWindow()
 //-----------------------------------------------------------------------------
 void MainWindow::startGame(void)
 {
+    //-------------------------------------------------------------------------
     ui->widget_gameField->setVisible(true);
     ui->widget_mainMenu->setVisible(false);
-
-    //    qDebug() << QString::fromUtf8("Строю талицу Инвентаря.");
-
-    //    ui->tableWidget_inventar->setColumnCount(3);
-
-    //    ui->tableWidget_inventar->setRowCount(3);
-    //    int i;
-    //    for(i = 0; i < ui->tableWidget_inventar->rowCount(); i++)
-    //    {
-    //        ui->tableWidget_inventar->setRowHeight(i, 100);
-    //    }
-    //    for(i = 0; i < ui->tableWidget_inventar->columnCount(); i++)
-    //    {
-    //        ui->tableWidget_inventar->setColumnWidth(i, 100);
-    //    }
-    //    ui->tableWidget_inventar->resize(300 + ui->tableWidget_inventar->verticalHeader()->width(),
-    //                                     300 + ui->tableWidget_inventar->horizontalHeader()->height()
-    //                                     );
+    //-------------------------------------------------------------------------
     ui->tableWidget_inventar->showGrid();
-
+    //-------------------------------------------------------------------------
     int col;
     int row;
     for (col = 0; col < ui->tableWidget_inventar->columnCount(); col++)
@@ -93,13 +79,15 @@ void MainWindow::startGame(void)
             //-----------------------------------------------------------
         }
     }
+    //-------------------------------------------------------------------------
 }
 //-----------------------------------------------------------------------------
 void MainWindow::mainMenu(void)
 {
+    //-------------------------------------------------------------------------
     ui->widget_gameField->setVisible(false);
     ui->widget_mainMenu->setVisible(true);
-
+    //-------------------------------------------------------------------------
     int col;
     int row;
     for (col = 0; col < ui->tableWidget_inventar->columnCount(); col++)
@@ -112,5 +100,6 @@ void MainWindow::mainMenu(void)
             //-----------------------------------------------------------
         }
     }
+    //-------------------------------------------------------------------------
 }
 //-----------------------------------------------------------------------------

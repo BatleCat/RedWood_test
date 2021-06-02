@@ -14,8 +14,8 @@ qt_predmet::qt_predmet(QWidget *parent) :
     predmet_type(PREDMET_TYPE::UNKNOW_PREDMET),
     predmet_img(QString::fromUtf8(""))
 {
-    QImage *img = new QImage(width(), height(), QImage::Format_RGB32);
-    img->fill(palette().background().color());
+    QImage *img = new QImage( width(), height(), QImage::Format_RGB32 );
+    img->fill( palette().background().color() );
 
     widget_layout.setMargin(0);
     widget_layout.setSpacing(0);
@@ -35,32 +35,38 @@ void qt_predmet::set_predmet_type(PREDMET_TYPE type)
     predmet_type = type;
     if ( predmet_type == PREDMET_TYPE::UNKNOW_PREDMET)
     {
-        QImage *img = new QImage(width(), height(), QImage::Format_RGB32);
-        img->fill(palette().window().color());
-
-        label_predmet_img.setFixedSize( img->size() );
-        label_predmet_img.setPixmap( QPixmap::fromImage(*img) );
+        QPixmap* pix_img = new QPixmap( size() );
+        pix_img->fill( palette().window().color() );
+        label_predmet_img.setFixedSize( pix_img->size() );
+        label_predmet_img.setPixmap( (*pix_img) );
     }
 }
 //-----------------------------------------------------------------------------
 void qt_predmet::set_predmet_img(QString img_string)
 {
     QImage img;
-    QImage img1;
 
     predmet_img = img_string;
 
-    img.load(predmet_img);
-    img1 = img.scaled( size(), Qt::KeepAspectRatio );
-
-    label_predmet_img.setFixedSize( img1.size() );
-    label_predmet_img.setPixmap( QPixmap::fromImage(img1) );
+    if ( img.load(predmet_img) )
+    {
+        QImage img1 = img.scaled( size(), Qt::KeepAspectRatio );
+        label_predmet_img.setFixedSize( img1.size() );
+        label_predmet_img.setPixmap( QPixmap::fromImage(img1) );
+    }
+    else
+    {
+        QPixmap* pix_img = new QPixmap( size() );
+        pix_img->fill( palette().window().color() );
+        label_predmet_img.setFixedSize( pix_img->size() );
+        label_predmet_img.setPixmap( (*pix_img) );
+    }
 }
 //-----------------------------------------------------------------------------
 void qt_predmet::copy_predmet(qt_predmet &src_predmet)
 {
     predmet_type = src_predmet.get_predmet_type();
-    set_predmet_img(src_predmet.get_predmet_img());
+    set_predmet_img( src_predmet.get_predmet_img() );
 }
 //-----------------------------------------------------------------------------
 QString qt_predmet::get_predmet_name()
@@ -104,7 +110,7 @@ void qt_predmet::startDrag()
     pMimeData->setPredmet(this);
     QDrag* pDrag = new QDrag(this);
     pDrag->setMimeData(pMimeData);
-    pDrag->setPixmap(QPixmap::fromImage(img1));
+    pDrag->setPixmap( QPixmap::fromImage(img1) );
     pDrag->exec(Qt::MoveAction);
 }
 //-----------------------------------------------------------------------------
@@ -121,7 +127,7 @@ void qt_predmet::mouseMoveEvent (QMouseEvent* pme)
 {
     if (pme->buttons() & Qt::LeftButton)
     {
-        int distance = (pme->pos() - m_ptDragPos).manhattanLength();
+        int distance = ( pme->pos() - m_ptDragPos ).manhattanLength();
         if (distance > QApplication::startDragDistance())
         {
             startDrag();
@@ -132,13 +138,13 @@ void qt_predmet::mouseMoveEvent (QMouseEvent* pme)
 //-----------------------------------------------------------------------------
 QDataStream& operator <<(QDataStream &out, const PREDMET_TYPE &predmet_type)
 {
-    out.writeRawData((char*)(&predmet_type), sizeof(PREDMET_TYPE));
+    out.writeRawData( (char*)(&predmet_type), sizeof(PREDMET_TYPE) );
     return out;
 }
 //-----------------------------------------------------------------------------
 QDataStream& operator >>(QDataStream &in, PREDMET_TYPE &predmet_type)
 {
-    in.readRawData((char*)(&predmet_type), sizeof(PREDMET_TYPE));
+    in.readRawData( (char*)(&predmet_type), sizeof(PREDMET_TYPE) );
     return in;
 }
 //-----------------------------------------------------------------------------

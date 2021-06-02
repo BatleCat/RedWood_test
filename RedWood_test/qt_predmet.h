@@ -26,7 +26,7 @@ class qt_predmet : public QWidget
 public:
     explicit      qt_predmet(QWidget *parent = nullptr);
 
-    void          set_predmet_type(PREDMET_TYPE type);//   { predmet_type = type; }
+    void          set_predmet_type(PREDMET_TYPE type);
     PREDMET_TYPE  get_predmet_type()                    { return predmet_type; }
     void          set_predmet_img(QString img_string);
     QString       get_predmet_img()                     { return predmet_img;  }
