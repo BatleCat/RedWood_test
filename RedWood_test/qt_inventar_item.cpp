@@ -60,6 +60,8 @@ void qt_inventar_item::startDrag()
     pDrag->setMimeData(pMimeData);
     pDrag->setPixmap( QPixmap::fromImage(img1) );
     pDrag->exec(Qt::MoveAction);
+
+    set_predmet_count(0);
 }
 //-----------------------------------------------------------------------------
 void qt_inventar_item::mousePressEvent(QMouseEvent* pme)
